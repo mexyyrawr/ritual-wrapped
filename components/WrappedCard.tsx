@@ -145,14 +145,7 @@ export function WrappedCard({ data }: WrappedCardProps) {
                 <span className="text-base">{stat.icon}</span>
                 <div className="min-w-0">
                   <div className="text-white/40 text-[8px] uppercase tracking-wider truncate">{stat.label}</div>
-                  <div
-                    className="font-mono text-xs font-bold truncate"
-                    style={{
-                      background: `linear-gradient(135deg, ${getStatColor(index).includes('red') ? '#ef4444' : getStatColor(index).includes('green') ? '#4ade80' : getStatColor(index).includes('blue') ? '#60a5fa' : getStatColor(index).includes('orange') ? '#fb923c' : getStatColor(index).includes('purple') ? '#c084fc' : getStatColor(index).includes('indigo') ? '#818cf8' : getStatColor(index).includes('teal') ? '#2dd4bf' : '#fbbf24'}, ${getStatColor(index).split(' to-')[1] || '#fbbf24'})`,
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                    }}
-                  >
+                  <div className="font-mono text-xs font-bold text-white truncate">
                     {stat.value}
                   </div>
                 </div>
