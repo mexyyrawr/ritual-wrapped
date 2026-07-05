@@ -47,17 +47,14 @@ export async function GET(request: NextRequest) {
     // Generate title based on tx count
     let title: string
     let subtitle: string
+    title = 'Ritual Recap'
     if (totalTransactions > 100) {
-      title = 'Ritual Degen'
       subtitle = 'You live on-chain'
     } else if (totalTransactions > 50) {
-      title = 'Ritual Explorer'
       subtitle = 'Charting the chain'
     } else if (totalTransactions > 10) {
-      title = 'Ritual Builder'
       subtitle = 'Creating the future'
     } else {
-      title = 'Ritual Newcomer'
       subtitle = 'Welcome to the chain'
     }
 
