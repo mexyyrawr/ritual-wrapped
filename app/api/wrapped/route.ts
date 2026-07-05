@@ -112,7 +112,7 @@ export async function GET(request: NextRequest) {
       totalTransactions,
       totalGasSpent: (totalTransactions * 0.001).toFixed(3),
       uniqueContracts: Math.max(1, Math.floor(totalTransactions * 0.7)),
-      largestTx: `${(balanceRitual * 0.1).toFixed(2)} RITUAL`,
+      largestTx: `${(parseFloat(balanceRitual) * 0.1).toFixed(2)} RITUAL`,
       activeDays: Math.floor(walletAgeDays * 0.6),
       currentBalance: balanceRitual,
       title,
