@@ -22,6 +22,7 @@ body {
   border-color: rgba(31, 41, 55, 0.5);
 }
 
+/* Gradient Text */
 .gradient-text {
   background: linear-gradient(135deg, #19D184 0%, #BFFF00 100%);
   -webkit-background-clip: text;
@@ -29,6 +30,14 @@ body {
   background-clip: text;
 }
 
+.gradient-text-pink {
+  background: linear-gradient(135deg, #FF1DCE 0%, #FACC15 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Card Styles */
 .card-border {
   border: 1px solid rgba(25, 209, 132, 0.2);
   border-radius: 0.75rem;
@@ -38,6 +47,7 @@ body {
   border-color: rgba(25, 209, 132, 0.4);
 }
 
+/* Button */
 .btn-green {
   border: 1px solid #19D184;
   background: transparent;
@@ -50,15 +60,127 @@ body {
   box-shadow: 0 0 20px rgba(25, 209, 132, 0.3);
 }
 
+/* Mesh Gradient Background for Card */
+.mesh-gradient {
+  background:
+    radial-gradient(ellipse at 20% 50%, rgba(25, 209, 132, 0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(191, 255, 0, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(255, 29, 206, 0.08) 0%, transparent 50%),
+    linear-gradient(180deg, #0a0a0a 0%, #111827 100%);
+}
+
+/* Noise Texture Overlay */
+.noise-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size: 128px 128px;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: inherit;
+}
+
+/* Glow Effects */
+.glow-green {
+  box-shadow:
+    0 0 40px -10px rgba(25, 209, 132, 0.3),
+    0 0 80px -20px rgba(25, 209, 132, 0.15),
+    inset 0 1px 0 rgba(25, 209, 132, 0.1);
+}
+
+.glow-lime {
+  box-shadow:
+    0 0 30px -8px rgba(191, 255, 0, 0.2),
+    inset 0 1px 0 rgba(191, 255, 0, 0.1);
+}
+
+.glow-pink {
+  box-shadow:
+    0 0 30px -8px rgba(255, 29, 206, 0.2),
+    inset 0 1px 0 rgba(255, 29, 206, 0.1);
+}
+
+/* Stat Card Hover */
+.stat-card {
+  background: linear-gradient(135deg, rgba(31, 41, 55, 0.8) 0%, rgba(17, 24, 39, 0.9) 100%);
+  border: 1px solid rgba(55, 65, 81, 0.5);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  border-color: rgba(25, 209, 132, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+/* Animations */
 @keyframes pulse-green {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px -5px rgba(25, 209, 132, 0.2); }
+  50% { box-shadow: 0 0 40px -5px rgba(25, 209, 132, 0.4); }
 }
 
 .animate-pulse-green {
   animation: pulse-green 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 30%, rgba(25, 209, 132, 0.1) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+/* Decorative Elements */
+.grid-pattern {
+  background-image:
+    linear-gradient(rgba(25, 209, 132, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(25, 209, 132, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #374151;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4B5563;
+}
+
+/* Selection */
+::selection {
+  background: rgba(25, 209, 132, 0.3);
+  color: #fff;
 }
