@@ -1,7 +1,6 @@
 'use client'
 
 import { useRef, useState } from 'react'
-import { RitualLogo } from './RitualLogo'
 import type { WrappedData } from '@/lib/types'
 
 interface WrappedCardProps {
@@ -58,7 +57,7 @@ export function WrappedCard({ data }: WrappedCardProps) {
           {/* Top - Logo & Branding */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
-              <RitualLogo className="w-7 h-7" />
+              <img src="/ritual-logo.png" alt="Ritual" className="w-7 h-7" />
               <div>
                 <div className="text-white font-display text-sm tracking-wide">RITUAL</div>
                 <div className="text-ritual-green text-[10px] font-mono uppercase tracking-widest">Recap</div>
