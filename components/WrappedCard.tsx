@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react'
 import type { WrappedData } from '@/lib/types'
+import { useClaimWrapped } from '@/hooks/useClaimWrapped'
 
 interface WrappedCardProps {
   data: WrappedData
@@ -10,6 +11,8 @@ interface WrappedCardProps {
 export function WrappedCard({ data }: WrappedCardProps) {
   const cardRef = useRef<HTMLDivElement>(null)
   const [capturing, setCapturing] = useState(false)
+  const [claimed, setClaimed] = useState(false)
+  const { claim, isLoading: claiming, error: claimError, txHash } = useClaimWrapped()
 
   const truncateAddress = (addr: string) => {
     return `${addr.slice(0, 6)}...${addr.slice(-4)}`
@@ -33,6 +36,26 @@ export function WrappedCard({ data }: WrappedCardProps) {
       console.error('Failed to capture:', err)
     } finally {
       setCapturing(false)
+    }
+  }
+
+  const handleClaim = async () => {
+    try {
+      await claim({
+        totalTransactions: data.totalTransactions,
+        totalSent: data.totalValueTransacted || '0',
+        totalReceived: '0',
+        totalGasSpent: data.totalGasSpent || '0',
+        largestTx: data.largestTx || '0',
+        walletAgeDays: data.walletAgeDays,
+        uniqueContracts: data.uniqueContracts,
+        activityScore: data.activityScore,
+        activityLevel: data.stats.find(s => s.label === 'Activity Level')?.value || 'Newcomer',
+        funFact: data.funFact,
+      })
+      setClaimed(true)
+    } catch (err) {
+      console.error('Claim failed:', err)
     }
   }
 
@@ -123,12 +146,17 @@ export function WrappedCard({ data }: WrappedCardProps) {
             </div>
           </div>
 
-          {/* Note about data source */}
-          <div className="text-center my-2">
-            <p className="text-white/20 text-[8px]">
-              Data from last {data.stats.find(s => s.label === 'Blocks Scanned')?.value || '500'} blocks via RPC
-            </p>
-          </div>
+          {/* On-chain badge */}
+          {claimed && (
+            <div className="text-center my-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-ritual-green/10 border border-ritual-green/20">
+                <svg className="w-3 h-3 text-ritual-green" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+                </svg>
+                <span className="text-ritual-green text-[9px] font-semibold">On-chain Verified</span>
+              </div>
+            </div>
+          )}
 
           {/* Bottom - Address */}
           <div className="mt-auto text-center space-y-2">
@@ -148,42 +176,93 @@ export function WrappedCard({ data }: WrappedCardProps) {
       </div>
 
       {/* Action buttons */}
-      <div className="flex justify-center gap-3 mt-4">
-        <button
-          onClick={handleDownload}
-          disabled={capturing}
-          className="btn-green px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-105 disabled:opacity-50 flex items-center gap-2"
-        >
-          {capturing ? (
-            <>
-              <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-              </svg>
-              Capturing...
-            </>
-          ) : (
-            <>
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
-              </svg>
-              Download
-            </>
-          )}
-        </button>
+      <div className="flex flex-col gap-3 mt-4">
+        {/* Claim on-chain button */}
+        {!claimed && !txHash && (
+          <button
+            onClick={handleClaim}
+            disabled={claiming}
+            className="w-full bg-gradient-to-r from-ritual-green to-emerald-500 text-black px-5 py-3 rounded-xl text-sm font-bold transition-all hover:scale-105 disabled:opacity-50 flex items-center justify-center gap-2"
+          >
+            {claiming ? (
+              <>
+                <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                Claiming on-chain...
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                </svg>
+                🔗 Claim On-chain (pay gas)
+              </>
+            )}
+          </button>
+        )}
 
-        <button
-          onClick={() => {
-            const text = `My Ritual Wrapped ${new Date().getFullYear()} 🎭\n\n${data.title} — ${data.subtitle}\n\n${data.funFact}\n\nCheck yours → ritual-wrapped.vercel.app`
-            window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank')
-          }}
-          className="bg-black border border-gray-800 hover:border-ritual-green px-5 py-2.5 rounded-xl text-white text-sm font-medium transition-all hover:shadow-glow-green flex items-center gap-2"
-        >
-          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-          </svg>
-          Share on X
-        </button>
+        {/* Success message */}
+        {txHash && (
+          <div className="text-center p-3 rounded-xl bg-ritual-green/10 border border-ritual-green/20">
+            <p className="text-ritual-green text-xs font-semibold mb-1">✅ Claimed on-chain!</p>
+            <a
+              href={`https://explorer.ritualfoundation.org/tx/${txHash}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/40 text-[10px] font-mono hover:text-white/60"
+            >
+              View transaction →
+            </a>
+          </div>
+        )}
+
+        {/* Error message */}
+        {claimError && (
+          <div className="text-center p-3 rounded-xl bg-red-500/10 border border-red-500/20">
+            <p className="text-red-400 text-xs">❌ {claimError}</p>
+          </div>
+        )}
+
+        {/* Download & Share buttons */}
+        <div className="flex justify-center gap-3">
+          <button
+            onClick={handleDownload}
+            disabled={capturing}
+            className="btn-green px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-105 disabled:opacity-50 flex items-center gap-2"
+          >
+            {capturing ? (
+              <>
+                <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+                Capturing...
+              </>
+            ) : (
+              <>
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
+                </svg>
+                Download
+              </>
+            )}
+          </button>
+
+          <button
+            onClick={() => {
+              const text = `My Ritual Wrapped ${new Date().getFullYear()} 🎭\n\n${data.title} — ${data.subtitle}\n\n${data.funFact}\n\nCheck yours → ritual-wrapped.vercel.app`
+              window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank')
+            }}
+            className="bg-black border border-gray-800 hover:border-ritual-green px-5 py-2.5 rounded-xl text-white text-sm font-medium transition-all hover:shadow-glow-green flex items-center gap-2"
+          >
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+            </svg>
+            Share on X
+          </button>
+        </div>
       </div>
     </div>
   )

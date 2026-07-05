@@ -1,0 +1,294 @@
+[
+  {
+    "inputs": [],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "wallet",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "totalTransactions",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "activityScore",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "activityLevel",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timestamp",
+        "type": "uint256"
+      }
+    ],
+    "name": "WrappedClaimed",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_totalTransactions",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_totalSent",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_totalReceived",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_totalGasSpent",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_largestTx",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_walletAgeDays",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_uniqueContracts",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_activityScore",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "_activityLevel",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "_funFact",
+        "type": "string"
+      }
+    ],
+    "name": "claimWrapped",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_offset",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_limit",
+        "type": "uint256"
+      }
+    ],
+    "name": "getClaimers",
+    "outputs": [
+      {
+        "internalType": "address[]",
+        "name": "",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getTotalClaims",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_address",
+        "type": "address"
+      }
+    ],
+    "name": "getWrappedData",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "wallet",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalTransactions",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalSent",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalReceived",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "totalGasSpent",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "largestTx",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "walletAgeDays",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "uniqueContracts",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "activityScore",
+            "type": "uint256"
+          },
+          {
+            "internalType": "string",
+            "name": "activityLevel",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "funFact",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "claimedAt",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "blockNumber",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "exists",
+            "type": "bool"
+          }
+        ],
+        "internalType": "struct RitualWrapped.WrappedData",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_address",
+        "type": "address"
+      }
+    ],
+    "name": "hasClaimed",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "claimers",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalClaims",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalGasUsed",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  }
+]
