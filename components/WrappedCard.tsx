@@ -53,9 +53,9 @@ export function WrappedCard({ data }: WrappedCardProps) {
         <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-ritual-lime/10 rounded-full blur-[120px] translate-y-1/2" />
 
         {/* Content */}
-        <div className="relative z-10 flex flex-col h-full p-6">
+        <div className="relative z-10 flex flex-col h-full p-5">
           {/* Top - Logo & Branding */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <img src="/ritual-logo.png" alt="Ritual" className="w-7 h-7" />
               <div>
@@ -67,8 +67,8 @@ export function WrappedCard({ data }: WrappedCardProps) {
           </div>
 
           {/* Title Section */}
-          <div className="text-center my-auto py-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-6">
+          <div className="text-center my-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-4">
               <div className="w-1.5 h-1.5 rounded-full bg-ritual-green animate-pulse" />
               <span className="text-white/60 text-[10px] font-medium uppercase tracking-wider">
                 Your {new Date().getFullYear()} Wrapped
@@ -76,7 +76,7 @@ export function WrappedCard({ data }: WrappedCardProps) {
             </div>
 
             <h2
-              className="font-display text-5xl leading-[0.95] mb-3"
+              className="font-display text-4xl leading-[0.95] mb-2"
               style={{
                 background: 'linear-gradient(135deg, #BFFF00 0%, #19D184 50%, #9b51e0 100%)',
                 WebkitBackgroundClip: 'text',
@@ -85,19 +85,19 @@ export function WrappedCard({ data }: WrappedCardProps) {
             >
               {data.title}
             </h2>
-            <p className="text-white/50 text-base font-light">{data.subtitle}</p>
+            <p className="text-white/50 text-sm font-light">{data.subtitle}</p>
           </div>
 
-          {/* Stats - 2x2 grid, clean */}
-          <div className="grid grid-cols-2 gap-3 mb-6">
+          {/* Stats - 2x4 grid, all real data */}
+          <div className="grid grid-cols-2 gap-2 my-4">
             {data.stats.map((stat, index) => (
               <div
                 key={index}
-                className="flex flex-col items-center py-4 px-3 rounded-2xl bg-white/[0.03] border border-white/[0.05]"
+                className="flex flex-col items-center py-3 px-2 rounded-xl bg-white/[0.03] border border-white/[0.05]"
               >
-                <span className="text-2xl mb-2">{stat.icon}</span>
-                <div className="text-white/40 text-[9px] uppercase tracking-wider mb-1">{stat.label}</div>
-                <div className="font-mono text-sm font-bold text-white text-center">
+                <span className="text-lg mb-1">{stat.icon}</span>
+                <div className="text-white/40 text-[8px] uppercase tracking-wider mb-0.5">{stat.label}</div>
+                <div className="font-mono text-[11px] font-bold text-white text-center leading-tight">
                   {stat.value}
                 </div>
               </div>
@@ -105,16 +105,16 @@ export function WrappedCard({ data }: WrappedCardProps) {
           </div>
 
           {/* Fun Fact */}
-          <div className="rounded-xl overflow-hidden mb-6">
+          <div className="rounded-xl overflow-hidden my-4">
             <div className="bg-gradient-to-r from-ritual-pink/10 via-transparent to-ritual-gold/10 p-[1px] rounded-xl">
-              <div className="bg-black/80 rounded-xl p-4">
-                <div className="flex items-start gap-3">
-                  <span className="text-lg">💡</span>
+              <div className="bg-black/80 rounded-xl p-3">
+                <div className="flex items-start gap-2">
+                  <span className="text-sm">💡</span>
                   <div>
-                    <div className="text-ritual-pink text-[9px] font-semibold uppercase tracking-widest mb-1">
+                    <div className="text-ritual-pink text-[8px] font-semibold uppercase tracking-widest mb-1">
                       Fun Fact
                     </div>
-                    <p className="text-white/60 text-xs leading-relaxed">
+                    <p className="text-white/60 text-[10px] leading-relaxed">
                       {data.funFact}
                     </p>
                   </div>
@@ -123,10 +123,17 @@ export function WrappedCard({ data }: WrappedCardProps) {
             </div>
           </div>
 
+          {/* Note about data source */}
+          <div className="text-center my-2">
+            <p className="text-white/20 text-[8px]">
+              Data from last {data.stats.find(s => s.label === 'Blocks Scanned')?.value || '500'} blocks via RPC
+            </p>
+          </div>
+
           {/* Bottom - Address */}
-          <div className="mt-auto text-center space-y-3">
-            <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.05]">
-              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-purple-500 to-ritual-green flex items-center justify-center text-black text-[10px] font-bold">
+          <div className="mt-auto text-center space-y-2">
+            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/[0.05]">
+              <div className="w-6 h-6 rounded-full bg-gradient-to-br from-purple-500 to-ritual-green flex items-center justify-center text-black text-[8px] font-bold">
                 {data.address.slice(2, 4).toUpperCase()}
               </div>
               <span className="font-mono text-white/40 text-xs">
@@ -141,7 +148,7 @@ export function WrappedCard({ data }: WrappedCardProps) {
       </div>
 
       {/* Action buttons */}
-      <div className="flex justify-center gap-3 mt-6">
+      <div className="flex justify-center gap-3 mt-4">
         <button
           onClick={handleDownload}
           disabled={capturing}
