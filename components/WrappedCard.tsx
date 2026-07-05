@@ -37,6 +37,21 @@ export function WrappedCard({ data }: WrappedCardProps) {
     }
   }
 
+  // Get color class for stat gradient
+  const getStatColor = (index: number) => {
+    const colors = [
+      'from-red-500 to-orange-500',
+      'from-green-400 to-emerald-500',
+      'from-blue-400 to-cyan-500',
+      'from-orange-400 to-yellow-500',
+      'from-purple-400 to-pink-500',
+      'from-indigo-400 to-violet-500',
+      'from-teal-400 to-cyan-500',
+      'from-yellow-400 to-amber-500',
+    ]
+    return colors[index % colors.length]
+  }
+
   return (
     <div className="w-full max-w-md mx-auto">
       {/* Screenshot card - Spotify Wrapped style */}
@@ -58,32 +73,57 @@ export function WrappedCard({ data }: WrappedCardProps) {
         <div className="absolute inset-0 noise-overlay" />
 
         {/* Content */}
-        <div className="relative z-10 flex flex-col h-full p-8">
+        <div className="relative z-10 flex flex-col h-full p-6">
           {/* Top - Logo & Branding */}
-          <div className="flex items-center justify-between mb-auto">
-            <div className="flex items-center gap-2.5">
-              <RitualLogo className="w-8 h-8" />
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <RitualLogo className="w-7 h-7" />
               <div>
                 <div className="text-white font-display text-sm tracking-wide">RITUAL</div>
-                <div className="text-ritual-green text-[10px] font-mono uppercase tracking-widest">Wrapped</div>
+                <div className="text-ritual-green text-[10px] font-mono uppercase tracking-widest">Recap</div>
               </div>
             </div>
             <div className="text-gray-600 font-mono text-xs">{new Date().getFullYear()}</div>
           </div>
 
-          {/* Center - Main Title (Spotify style: BIG bold text) */}
-          <div className="my-auto text-center py-8">
-            {/* Year badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 mb-6">
+          {/* Activity Score Ring */}
+          <div className="flex justify-center my-4">
+            <div className="relative w-28 h-28">
+              <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="6" />
+                <circle
+                  cx="50" cy="50" r="42"
+                  fill="none"
+                  stroke="url(#scoreGrad)"
+                  strokeWidth="6"
+                  strokeLinecap="round"
+                  strokeDasharray={`${(data.activityScore / 100) * 264} 264`}
+                />
+                <defs>
+                  <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#BFFF00" />
+                    <stop offset="50%" stopColor="#19D184" />
+                    <stop offset="100%" stopColor="#9b51e0" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <div className="text-2xl font-display font-bold text-white">{data.activityScore}</div>
+                <div className="text-[8px] text-white/40 uppercase tracking-widest">Score</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Title */}
+          <div className="text-center mb-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 mb-3">
               <div className="w-1.5 h-1.5 rounded-full bg-ritual-green animate-pulse" />
-              <span className="text-white/60 text-xs font-medium uppercase tracking-wider">
+              <span className="text-white/60 text-[10px] font-medium uppercase tracking-wider">
                 Your {new Date().getFullYear()} Wrapped
               </span>
             </div>
-
-            {/* Title - HUGE like Spotify */}
             <h2
-              className="font-display text-5xl md:text-6xl leading-[0.95] mb-4"
+              className="font-display text-4xl leading-[0.95] mb-2"
               style={{
                 background: 'linear-gradient(135deg, #BFFF00 0%, #19D184 50%, #9b51e0 100%)',
                 WebkitBackgroundClip: 'text',
@@ -92,55 +132,45 @@ export function WrappedCard({ data }: WrappedCardProps) {
             >
               {data.title}
             </h2>
-
-            {/* Subtitle */}
-            <p className="text-white/50 text-base font-light max-w-[250px] mx-auto">
-              {data.subtitle}
-            </p>
+            <p className="text-white/50 text-sm font-light">{data.subtitle}</p>
           </div>
 
-          {/* Stats - Spotify style: big numbers, minimal labels */}
-          <div className="space-y-4 mb-auto">
-            {data.stats.slice(0, 3).map((stat, index) => (
+          {/* Stats Grid - 2 columns for more data */}
+          <div className="grid grid-cols-2 gap-2 mb-4">
+            {data.stats.slice(0, 6).map((stat, index) => (
               <div
                 key={index}
-                className="flex items-center justify-between py-3 px-4 rounded-2xl bg-white/[0.03] border border-white/[0.05]"
+                className="flex items-center gap-2 py-2 px-3 rounded-xl bg-white/[0.03] border border-white/[0.05]"
               >
-                <div className="flex items-center gap-3">
-                  <span className="text-xl">{stat.icon}</span>
-                  <span className="text-white/40 text-xs uppercase tracking-wider font-medium">
-                    {stat.label}
-                  </span>
+                <span className="text-base">{stat.icon}</span>
+                <div className="min-w-0">
+                  <div className="text-white/40 text-[8px] uppercase tracking-wider truncate">{stat.label}</div>
+                  <div
+                    className="font-mono text-xs font-bold truncate"
+                    style={{
+                      background: `linear-gradient(135deg, ${getStatColor(index).includes('red') ? '#ef4444' : getStatColor(index).includes('green') ? '#4ade80' : getStatColor(index).includes('blue') ? '#60a5fa' : getStatColor(index).includes('orange') ? '#fb923c' : getStatColor(index).includes('purple') ? '#c084fc' : getStatColor(index).includes('indigo') ? '#818cf8' : getStatColor(index).includes('teal') ? '#2dd4bf' : '#fbbf24'}, ${getStatColor(index).split(' to-')[1] || '#fbbf24'})`,
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                    }}
+                  >
+                    {stat.value}
+                  </div>
                 </div>
-                <span
-                  className="font-mono text-lg font-bold"
-                  style={{
-                    background: index === 0
-                      ? 'linear-gradient(135deg, #BFFF00, #19D184)'
-                      : index === 1
-                      ? 'linear-gradient(135deg, #19D184, #9b51e0)'
-                      : 'linear-gradient(135deg, #FF1DCE, #FACC15)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                  }}
-                >
-                  {stat.value}
-                </span>
               </div>
             ))}
           </div>
 
           {/* Fun Fact */}
-          <div className="my-6 rounded-2xl overflow-hidden">
-            <div className="bg-gradient-to-r from-ritual-pink/10 via-transparent to-ritual-gold/10 p-[1px] rounded-2xl">
-              <div className="bg-black/80 rounded-2xl p-4">
-                <div className="flex items-start gap-3">
-                  <span className="text-lg">💡</span>
+          <div className="rounded-xl overflow-hidden mb-4">
+            <div className="bg-gradient-to-r from-ritual-pink/10 via-transparent to-ritual-gold/10 p-[1px] rounded-xl">
+              <div className="bg-black/80 rounded-xl p-3">
+                <div className="flex items-start gap-2">
+                  <span className="text-sm">💡</span>
                   <div>
-                    <div className="text-ritual-pink text-[10px] font-semibold uppercase tracking-widest mb-1">
+                    <div className="text-ritual-pink text-[8px] font-semibold uppercase tracking-widest mb-1">
                       Fun Fact
                     </div>
-                    <p className="text-white/60 text-xs leading-relaxed">
+                    <p className="text-white/60 text-[10px] leading-relaxed">
                       {data.funFact}
                     </p>
                   </div>
@@ -149,19 +179,31 @@ export function WrappedCard({ data }: WrappedCardProps) {
             </div>
           </div>
 
-          {/* Bottom - Address & CTA */}
-          <div className="mt-auto text-center space-y-4">
-            <div className="inline-flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.05]">
-              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-purple-500 to-ritual-green flex items-center justify-center text-black text-[10px] font-bold">
+          {/* Bottom - Address & Stats Summary */}
+          <div className="mt-auto text-center space-y-3">
+            {/* Quick stats row */}
+            <div className="flex justify-center gap-4 text-[9px]">
+              <div>
+                <div className="text-white/30">Total Moved</div>
+                <div className="text-ritual-green font-mono font-bold">{data.totalValueTransacted} RITUAL</div>
+              </div>
+              <div>
+                <div className="text-white/30">Monthly Avg</div>
+                <div className="text-blue-400 font-mono font-bold">{data.monthlyAvg} tx</div>
+              </div>
+            </div>
+
+            <div className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white/[0.03] border border-white/[0.05]">
+              <div className="w-5 h-5 rounded-full bg-gradient-to-br from-purple-500 to-ritual-green flex items-center justify-center text-black text-[7px] font-bold">
                 {data.address.slice(2, 4).toUpperCase()}
               </div>
-              <span className="font-mono text-white/40 text-xs">
+              <span className="font-mono text-white/40 text-[10px]">
                 {truncateAddress(data.address)}
               </span>
             </div>
 
-            <div className="pt-3">
-              <p className="text-white/20 text-[10px] font-mono">
+            <div>
+              <p className="text-white/20 text-[8px] font-mono">
                 ritual-wrapped.vercel.app
               </p>
             </div>
@@ -170,11 +212,11 @@ export function WrappedCard({ data }: WrappedCardProps) {
       </div>
 
       {/* Action buttons - outside card (not in screenshot) */}
-      <div className="flex justify-center gap-3 mt-6">
+      <div className="flex justify-center gap-3 mt-4">
         <button
           onClick={handleDownload}
           disabled={capturing}
-          className="btn-green px-5 py-2.5 rounded-xl text-sm font-semibold transition-all hover:scale-105 disabled:opacity-50 flex items-center gap-2"
+          className="btn-green px-4 py-2 rounded-xl text-sm font-semibold transition-all hover:scale-105 disabled:opacity-50 flex items-center gap-2"
         >
           {capturing ? (
             <>
@@ -196,10 +238,10 @@ export function WrappedCard({ data }: WrappedCardProps) {
 
         <button
           onClick={() => {
-            const text = `My Ritual Wrapped ${new Date().getFullYear()} 🎭\n\nI'm a ${data.title}!\n${data.subtitle}\n\n${data.funFact}\n\nCheck yours → ritual-wrapped.vercel.app`
+            const text = `My Ritual Wrapped ${new Date().getFullYear()} 🎭\n\nI'm a ${data.title}!\n${data.subtitle}\n\nActivity Score: ${data.activityScore}/100\n${data.funFact}\n\nCheck yours → ritual-wrapped.vercel.app`
             window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank')
           }}
-          className="bg-black border border-gray-800 hover:border-ritual-green px-5 py-2.5 rounded-xl text-white text-sm font-medium transition-all hover:shadow-glow-green flex items-center gap-2"
+          className="bg-black border border-gray-800 hover:border-ritual-green px-4 py-2 rounded-xl text-white text-sm font-medium transition-all hover:shadow-glow-green flex items-center gap-2"
         >
           <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />

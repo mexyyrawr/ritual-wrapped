@@ -4,12 +4,15 @@ export interface WrappedData {
   walletAgeDays: number
   totalTransactions: number
   totalGasSpent: string // in RITUAL
+  totalValueTransacted: string // total value moved
   uniqueContracts: number
   largestTx: string
   activeDays: number
   currentBalance: string
-  title: string // AI-generated title like 'Ritual OG'
-  subtitle: string // AI-generated subtitle
-  stats: Array<{ label: string; value: string; icon: string }>
-  funFact: string // AI-generated fun fact
+  activityScore: number // 0-100
+  monthlyAvg: number // tx per month
+  title: string
+  subtitle: string
+  stats: Array<{ label: string; value: string; icon: string; color?: string }>
+  funFact: string
 }
