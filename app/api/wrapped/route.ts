@@ -20,40 +20,6 @@ async function rpcCall(method: string, params: any[] = []): Promise<any> {
   return data.result
 }
 
-/**
- * Binary search for first block where address had activity
- * Uses eth_getTransactionCount at different block heights
- * ~25 calls for 42M blocks (log2)
- */
-async function findFirstActiveBlock(address: string, latestBlock: number): Promise<number | null> {
-  // Quick check: if txCount is 0 at latest, no history
-  const countHex = await rpcCall('eth_getTransactionCount', [address, 'latest'])
-  const count = parseInt(countHex, 16)
-  if (count === 0) return null
-
-  let low = 1
-  let high = latestBlock
-  let steps = 0
-  const MAX_STEPS = 25
-
-  while (low < high && steps < MAX_STEPS) {
-    const mid = Math.floor((low + high) / 2)
-    try {
-      const cHex = await rpcCall('eth_getTransactionCount', [address, '0x' + mid.toString(16)])
-      const c = parseInt(cHex, 16)
-      if (c > 0) {
-        high = mid
-      } else {
-        low = mid + 1
-      }
-    } catch {
-      break
-    }
-    steps++
-  }
-  return low
-}
-
 function getIndexedData() {
   try {
     const dataPath = path.join(process.cwd(), 'lib', 'indexed-data.json')
@@ -86,48 +52,37 @@ export async function GET(request: NextRequest) {
     const addrLower = address.toLowerCase()
 
     // === ALWAYS FRESH FROM RPC (2 calls, instant) ===
-    const [balanceHex, txCountHex, latestHex] = await Promise.all([
+    const [balanceHex, txCountHex] = await Promise.all([
       rpcCall('eth_getBalance', [address, 'latest']),
       rpcCall('eth_getTransactionCount', [address, 'latest']),
-      rpcCall('eth_blockNumber', []),
     ])
 
     const balanceRitual = parseInt(balanceHex || '0x0', 16) / 1e18
     const txCount = parseInt(txCountHex || '0x0', 16)
-    const latestBlock = parseInt(latestHex, 16)
 
     // === INDEXED DATA (bonus enrichment) ===
     const indexedData = getIndexedData()
     const addrData = indexedData?.addresses?.[addrLower]
     const blocksScanned = indexedData?.recentBlocks?.scanned || 0
 
-    // === FIND FIRST ACTIVE BLOCK (binary search) ===
-    let firstActiveBlock: number | null = null
-    let walletAgeDays = 0
-
-    if (addrData?.firstBlock) {
-      // Use cached first block from indexer
-      firstActiveBlock = addrData.firstBlock
-    } else if (txCount > 0) {
-      // Binary search (~25 RPC calls)
-      firstActiveBlock = await findFirstActiveBlock(address, latestBlock)
-    }
-
-    if (firstActiveBlock) {
-      walletAgeDays = Math.max(1, Math.floor((latestBlock - firstActiveBlock) / 5760))
-    }
-
     // === MERGE DATA ===
+    // Use the HIGHER tx count (RPC = all-time, indexed = recent only)
+    const displayTxCount = Math.max(addrData?.txCount || 0, txCount)
+
     const totalSent = addrData?.totalSent || 0
     const totalReceived = addrData?.totalReceived || 0
     const totalMoved = totalSent + totalReceived
     const largestTx = addrData?.largestTx || 0
     const totalGasSpent = addrData?.totalGasSpent || 0
     const uniqueContracts = addrData?.contracts?.length || 0
-    const recentTxCount = addrData?.recentTxCount || 0
+    const firstBlock = addrData?.firstBlock || null
+    const lastBlock = addrData?.lastBlock || null
 
-    // Use the higher of indexed tx count or RPC tx count
-    const displayTxCount = Math.max(addrData?.txCount || 0, txCount)
+    // Wallet age: use indexed blocks if available (recent data)
+    let walletAgeDays = 0
+    if (firstBlock && lastBlock) {
+      walletAgeDays = Math.max(1, Math.floor((lastBlock - firstBlock) / 5760))
+    }
 
     const { level: activityLevel, subtitle } = getActivityLevel(displayTxCount)
 
@@ -187,7 +142,6 @@ export async function GET(request: NextRequest) {
       subtitle,
       stats,
       funFact,
-      firstActiveBlock,
       blocksScanned,
     })
   } catch (error) {
