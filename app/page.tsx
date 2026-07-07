@@ -85,11 +85,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-black text-white flex flex-col">
-      <Header
-        address={address}
-        isConnected={isConnected}
-        onConnect={handleConnect}
-      />
+      <Header />
 
       <div className="flex-1 flex flex-col items-center justify-center p-4">
         {!isConnected ? (
