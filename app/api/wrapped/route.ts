@@ -132,7 +132,7 @@ export async function GET(request: NextRequest) {
       totalReceived: totalReceived.toFixed(4),
       totalValueTransacted: totalMoved.toFixed(4),
       totalGasSpent: totalGasSpent.toFixed(6),
-      largestTx: `${largestTx.toFixed(4)} RITUAL`,
+      largestTx: largestTx.toFixed(4),
       walletAgeDays,
       uniqueContracts,
       activeDays: walletAgeDays,
