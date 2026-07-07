@@ -78,10 +78,24 @@ export async function GET(request: NextRequest) {
     const firstBlock = addrData?.firstBlock || null
     const lastBlock = addrData?.lastBlock || null
 
-    // Wallet age: use indexed blocks if available (recent data)
+    // Wallet age: fetch actual timestamps from blocks
     let walletAgeDays = 0
     if (firstBlock && lastBlock) {
-      walletAgeDays = Math.max(1, Math.floor((lastBlock - firstBlock) / 5760))
+      try {
+        const [firstBlockData, lastBlockData] = await Promise.all([
+          rpcCall('eth_getBlockByNumber', ['0x' + firstBlock.toString(16), false]),
+          rpcCall('eth_getBlockByNumber', ['0x' + lastBlock.toString(16), false]),
+        ])
+        const firstTs = parseInt(firstBlockData?.timestamp || '0x0', 16)
+        const lastTs = parseInt(lastBlockData?.timestamp || '0x0', 16)
+        if (firstTs > 0 && lastTs > firstTs) {
+          // Timestamps are in milliseconds
+          walletAgeDays = Math.max(1, Math.floor((lastTs - firstTs) / (1000 * 60 * 60 * 24)))
+        }
+      } catch {
+        // Fallback: estimate using actual block time (~268s per block for Ritual Testnet)
+        walletAgeDays = Math.max(1, Math.floor((lastBlock - firstBlock) * 268 / 86400))
+      }
     }
 
     const { level: activityLevel, subtitle } = getActivityLevel(displayTxCount)
