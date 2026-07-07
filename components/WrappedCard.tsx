@@ -43,6 +43,30 @@ export function WrappedCard({ data }: WrappedCardProps) {
   }
 
   const handleClaim = async () => {
+    // First ensure we're on the right chain
+    if (!isCorrectChain) {
+      try {
+        await switchChain({ chainId: ritualChain.id })
+      } catch (err: any) {
+        // If chain not added, try adding it first
+        if (err?.message?.includes('Unrecognized chain') || err?.code === 4902) {
+          await window.ethereum?.request({
+            method: 'wallet_addEthereumChain',
+            params: [{
+              chainId: '0x7B3', // 1979 in hex
+              chainName: 'Ritual Testnet',
+              nativeCurrency: { name: 'RITUAL', symbol: 'RITUAL', decimals: 18 },
+              rpcUrls: ['https://rpc.ritualfoundation.org'],
+              blockExplorerUrls: ['https://explorer.ritualfoundation.org'],
+            }],
+          })
+          await switchChain({ chainId: ritualChain.id })
+        } else {
+          throw err
+        }
+      }
+    }
+
     try {
       await claim({
         totalTransactions: data.totalTransactions,
@@ -184,7 +208,25 @@ export function WrappedCard({ data }: WrappedCardProps) {
         {!claimed && !txHash && (
           !isCorrectChain ? (
             <button
-              onClick={() => switchChain({ chainId: ritualChain.id })}
+              onClick={async () => {
+                try {
+                  await switchChain({ chainId: ritualChain.id })
+                } catch (err: any) {
+                  if (err?.message?.includes('Unrecognized chain') || err?.code === 4902) {
+                    await window.ethereum?.request({
+                      method: 'wallet_addEthereumChain',
+                      params: [{
+                        chainId: '0x7B3',
+                        chainName: 'Ritual Testnet',
+                        nativeCurrency: { name: 'RITUAL', symbol: 'RITUAL', decimals: 18 },
+                        rpcUrls: ['https://rpc.ritualfoundation.org'],
+                        blockExplorerUrls: ['https://explorer.ritualfoundation.org'],
+                      }],
+                    })
+                    await switchChain({ chainId: ritualChain.id })
+                  }
+                }
+              }}
               disabled={switching}
               className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white px-5 py-3 rounded-xl text-sm font-bold transition-all hover:scale-105 disabled:opacity-50 flex items-center justify-center gap-2"
             >
