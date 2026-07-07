@@ -60,6 +60,14 @@ export function WrappedCard({ data }: WrappedCardProps) {
       icon: '💡',
       themeIndex: data.stats.length + 1,
     },
+    // Summary card — all stats in one view (this is what gets downloaded)
+    {
+      type: 'summary' as const,
+      label: 'Your Wrapped',
+      value: '',
+      icon: '📊',
+      themeIndex: 0,
+    },
     // Claim card
     {
       type: 'claim' as const,
@@ -269,6 +277,57 @@ export function WrappedCard({ data }: WrappedCardProps) {
                 <p className="text-white text-xl font-light leading-relaxed">
                   {current.value}
                 </p>
+              </div>
+            )}
+
+            {current.type === 'summary' && (
+              <div className="text-center space-y-4 w-full max-w-xs">
+                {/* Title */}
+                <div className="mb-2">
+                  <div className="text-5xl mb-3">🎭</div>
+                  <h2
+                    className="font-display text-3xl leading-tight"
+                    style={{
+                      background: `linear-gradient(135deg, ${theme.accent} 0%, #ffffff 100%)`,
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                    }}
+                  >
+                    {data.title}
+                  </h2>
+                  <p className="text-white/50 text-sm mt-1">{data.subtitle}</p>
+                </div>
+
+                {/* Stats grid */}
+                <div className="grid grid-cols-2 gap-2">
+                  {data.stats.map((stat, i) => (
+                    <div
+                      key={i}
+                      className="flex flex-col items-center py-2.5 px-2 rounded-xl bg-white/[0.08] border border-white/[0.1]"
+                    >
+                      <span className="text-base mb-0.5">{stat.icon}</span>
+                      <div className="text-white/40 text-[7px] uppercase tracking-wider">{stat.label}</div>
+                      <div className="font-mono text-[10px] font-bold text-white leading-tight mt-0.5">
+                        {stat.value}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Fun fact */}
+                <div className="bg-white/[0.06] rounded-xl p-2.5 border border-white/[0.08]">
+                  <p className="text-white/50 text-[9px] leading-relaxed">
+                    💡 {data.funFact}
+                  </p>
+                </div>
+
+                {/* Branding */}
+                <div className="flex items-center justify-center gap-2 mt-1">
+                  <img src="/ritual-logo.png" alt="Ritual" className="w-4 h-4" />
+                  <span className="text-white/20 text-[8px] font-mono uppercase tracking-wider">
+                    ritual-wrapped.vercel.app
+                  </span>
+                </div>
               </div>
             )}
 
