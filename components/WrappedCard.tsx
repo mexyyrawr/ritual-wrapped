@@ -3,7 +3,7 @@
 import { useRef, useState } from 'react'
 import type { WrappedData } from '@/lib/types'
 import { useClaimWrapped } from '@/hooks/useClaimWrapped'
-import { useChainId, useSwitchChain } from 'wagmi'
+import { useAccount, useSwitchChain } from 'wagmi'
 import { ritualChain } from '@/lib/chain'
 
 interface WrappedCardProps {
@@ -15,9 +15,9 @@ export function WrappedCard({ data }: WrappedCardProps) {
   const [capturing, setCapturing] = useState(false)
   const [claimed, setClaimed] = useState(false)
   const { claim, isLoading: claiming, error: claimError, txHash } = useClaimWrapped()
-  const chainId = useChainId()
+  const { chain } = useAccount()
   const { switchChain, isPending: switching } = useSwitchChain()
-  const isCorrectChain = chainId === ritualChain.id
+  const isCorrectChain = chain?.id === ritualChain.id
 
   const truncateAddress = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`
 
