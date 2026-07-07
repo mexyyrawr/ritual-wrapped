@@ -234,7 +234,7 @@ export function WrappedCard({ data }: WrappedCardProps) {
           else if (x < rect.width * 0.4) goPrev()
         }}
         className="relative overflow-hidden rounded-3xl cursor-pointer select-none"
-        style={{ isolation: 'isolate', aspectRatio: '9/16' }}
+        style={{ isolation: 'isolate', aspectRatio: current.type === 'summary' ? '4/5' : '9/16' }}
       >
         {/* Gradient background */}
         <div className={`absolute inset-0 bg-gradient-to-b ${theme.bg}`} />
@@ -377,11 +377,11 @@ export function WrappedCard({ data }: WrappedCardProps) {
             )}
 
             {current.type === 'summary' && (
-              <div className="text-center space-y-4 w-full max-w-xs">
+              <div className="text-center space-y-2 w-full max-w-xs">
                 {/* Title */}
-                <div className="mb-2">
+                <div className="mb-1">
                   <h2
-                    className="font-display text-3xl leading-tight"
+                    className="font-display text-xl leading-tight"
                     style={{
                       background: `linear-gradient(135deg, ${theme.accent} 0%, #ffffff 100%)`,
                       WebkitBackgroundClip: 'text',
@@ -390,36 +390,38 @@ export function WrappedCard({ data }: WrappedCardProps) {
                   >
                     {data.title}
                   </h2>
-                  <p className="text-white/50 text-sm mt-1">{data.subtitle}</p>
+                  <p className="text-white/50 text-xs mt-0.5">{data.subtitle}</p>
                 </div>
 
-                {/* Stats grid */}
-                <div className="grid grid-cols-2 gap-2">
+                {/* Stats grid - compact */}
+                <div className="grid grid-cols-2 gap-1.5">
                   {data.stats.map((stat, i) => (
                     <div
                       key={i}
-                      className="flex flex-col items-center py-2.5 px-2 rounded-xl bg-white/[0.08] border border-white/[0.1]"
+                      className="flex items-center gap-2 py-1.5 px-2 rounded-lg bg-white/[0.08] border border-white/[0.1]"
                     >
-                      <span className="text-base mb-0.5">{stat.icon}</span>
-                      <div className="text-white/40 text-[7px] uppercase tracking-wider">{stat.label}</div>
-                      <div className="font-mono text-[10px] font-bold text-white leading-tight mt-0.5">
-                        {stat.value}
+                      <span className="text-xs">{stat.icon}</span>
+                      <div className="flex-1 text-left">
+                        <div className="text-white/40 text-[6px] uppercase tracking-wider leading-none">{stat.label}</div>
+                        <div className="font-mono text-[9px] font-bold text-white leading-tight">
+                          {stat.value}
+                        </div>
                       </div>
                     </div>
                   ))}
                 </div>
 
                 {/* Fun fact */}
-                <div className="bg-white/[0.06] rounded-xl p-2.5 border border-white/[0.08]">
-                  <p className="text-white/50 text-[9px] leading-relaxed">
+                <div className="bg-white/[0.06] rounded-lg px-2 py-1.5 border border-white/[0.08]">
+                  <p className="text-white/50 text-[7px] leading-snug">
                     💡 {data.funFact}
                   </p>
                 </div>
 
                 {/* Branding */}
-                <div className="flex items-center justify-center gap-2 mt-1">
-                  <img src="/ritual-logo.png" alt="Ritual" className="w-4 h-4" />
-                  <span className="text-white/20 text-[8px] font-mono uppercase tracking-wider">
+                <div className="flex items-center justify-center gap-1.5 pt-0.5">
+                  <img src="/ritual-logo.png" alt="Ritual" className="w-3 h-3" />
+                  <span className="text-white/20 text-[7px] font-mono uppercase tracking-wider">
                     ritual-wrapped.vercel.app
                   </span>
                 </div>
