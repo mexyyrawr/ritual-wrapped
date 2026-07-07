@@ -3,6 +3,8 @@
 import { useRef, useState } from 'react'
 import type { WrappedData } from '@/lib/types'
 import { useClaimWrapped } from '@/hooks/useClaimWrapped'
+import { useChainId, useSwitchChain } from 'wagmi'
+import { ritualChain } from '@/lib/chain'
 
 interface WrappedCardProps {
   data: WrappedData
@@ -13,10 +15,11 @@ export function WrappedCard({ data }: WrappedCardProps) {
   const [capturing, setCapturing] = useState(false)
   const [claimed, setClaimed] = useState(false)
   const { claim, isLoading: claiming, error: claimError, txHash } = useClaimWrapped()
+  const chainId = useChainId()
+  const { switchChain, isPending: switching } = useSwitchChain()
+  const isCorrectChain = chainId === ritualChain.id
 
-  const truncateAddress = (addr: string) => {
-    return `${addr.slice(0, 6)}...${addr.slice(-4)}`
-  }
+  const truncateAddress = (addr: string) => `${addr.slice(0, 6)}...${addr.slice(-4)}`
 
   const handleDownload = async () => {
     if (!cardRef.current) return
@@ -50,7 +53,7 @@ export function WrappedCard({ data }: WrappedCardProps) {
         walletAgeDays: data.walletAgeDays,
         uniqueContracts: data.uniqueContracts,
         activityScore: data.activityScore,
-        activityLevel: data.stats.find(s => s.label === 'Activity Level')?.value || 'Newcomer',
+        activityLevel: data.stats.find(s => s.label === 'Activity')?.value || 'Newcomer',
         funFact: data.funFact,
       })
       setClaimed(true)
@@ -177,30 +180,40 @@ export function WrappedCard({ data }: WrappedCardProps) {
 
       {/* Action buttons */}
       <div className="flex flex-col gap-3 mt-4">
-        {/* Claim on-chain button */}
+        {/* Chain warning / Claim button */}
         {!claimed && !txHash && (
-          <button
-            onClick={handleClaim}
-            disabled={claiming}
-            className="w-full bg-gradient-to-r from-ritual-green to-emerald-500 text-black px-5 py-3 rounded-xl text-sm font-bold transition-all hover:scale-105 disabled:opacity-50 flex items-center justify-center gap-2"
-          >
-            {claiming ? (
-              <>
-                <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-                Claiming on-chain...
-              </>
-            ) : (
-              <>
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-                </svg>
-                🔗 Claim On-chain (pay gas)
-              </>
-            )}
-          </button>
+          !isCorrectChain ? (
+            <button
+              onClick={() => switchChain({ chainId: ritualChain.id })}
+              disabled={switching}
+              className="w-full bg-gradient-to-r from-orange-500 to-red-500 text-white px-5 py-3 rounded-xl text-sm font-bold transition-all hover:scale-105 disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {switching ? 'Switching...' : '⚠️ Switch to Ritual Testnet'}
+            </button>
+          ) : (
+            <button
+              onClick={handleClaim}
+              disabled={claiming}
+              className="w-full bg-gradient-to-r from-ritual-green to-emerald-500 text-black px-5 py-3 rounded-xl text-sm font-bold transition-all hover:scale-105 disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {claiming ? (
+                <>
+                  <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                  Claiming on-chain...
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+                  </svg>
+                  🔗 Claim On-chain (pay gas)
+                </>
+              )}
+            </button>
+          )
         )}
 
         {/* Success message */}
