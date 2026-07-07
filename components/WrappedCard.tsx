@@ -234,7 +234,7 @@ export function WrappedCard({ data }: WrappedCardProps) {
           else if (x < rect.width * 0.4) goPrev()
         }}
         className="relative overflow-hidden rounded-3xl cursor-pointer select-none"
-        style={{ isolation: 'isolate', aspectRatio: current.type === 'summary' ? '4/5' : '9/16' }}
+        style={{ isolation: 'isolate', aspectRatio: current.type === 'summary' ? '9/16' : '4/3' }}
       >
         {/* Gradient background */}
         <div className={`absolute inset-0 bg-gradient-to-b ${theme.bg}`} />
@@ -250,11 +250,11 @@ export function WrappedCard({ data }: WrappedCardProps) {
         />
 
         {/* Content */}
-        <div className="relative z-10 flex flex-col h-full p-6">
+        <div className="relative z-10 flex flex-col h-full p-4">
           {/* Top bar */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <img src="/ritual-logo.png" alt="Ritual" className="w-6 h-6" />
+              <img src="/ritual-logo.png" alt="Ritual" className="w-5 h-5" />
               <span className="text-white/80 text-xs font-semibold uppercase tracking-wider">Ritual Wrapped</span>
             </div>
             <span className="text-white/40 text-xs font-mono">{new Date().getFullYear()}</span>
@@ -263,10 +263,10 @@ export function WrappedCard({ data }: WrappedCardProps) {
           {/* Card content */}
           <div className="flex-1 flex flex-col items-center justify-center">
             {current.type === 'title' && (
-              <div className="text-center space-y-6">
-                <div className="text-6xl">{current.icon}</div>
+              <div className="text-center space-y-3">
+                <div className="text-5xl">{current.icon}</div>
                 <h1
-                  className="font-display text-5xl leading-[0.95]"
+                  className="font-display text-4xl leading-[0.95]"
                   style={{
                     background: `linear-gradient(135deg, ${theme.accent} 0%, #ffffff 100%)`,
                     WebkitBackgroundClip: 'text',
@@ -275,8 +275,8 @@ export function WrappedCard({ data }: WrappedCardProps) {
                 >
                   {current.value}
                 </h1>
-                <p className="text-white/60 text-lg font-light">{current.subtitle}</p>
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/10">
+                <p className="text-white/60 text-base font-light">{current.subtitle}</p>
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/10">
                   <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: theme.accent }} />
                   <span className="text-white/60 text-xs font-medium uppercase tracking-wider">
                     Your {new Date().getFullYear()} Wrapped
@@ -286,8 +286,8 @@ export function WrappedCard({ data }: WrappedCardProps) {
             )}
 
             {current.type === 'stat' && (
-              <div className="text-center space-y-6">
-                <div className="text-7xl">{current.icon}</div>
+              <div className="text-center space-y-3">
+                <div className="text-6xl">{current.icon}</div>
                 <div className="text-white/50 text-sm font-semibold uppercase tracking-[0.2em]">
                   {current.label}
                 </div>
@@ -301,8 +301,8 @@ export function WrappedCard({ data }: WrappedCardProps) {
             )}
 
             {current.type === 'funfact' && (
-              <div className="text-center space-y-6 max-w-xs">
-                <div className="text-7xl">{current.icon}</div>
+              <div className="text-center space-y-3 max-w-sm">
+                <div className="text-6xl">{current.icon}</div>
                 <div className="text-white/50 text-sm font-semibold uppercase tracking-[0.2em]">
                   Fun Fact
                 </div>
@@ -313,8 +313,8 @@ export function WrappedCard({ data }: WrappedCardProps) {
             )}
 
             {current.type === 'claim' && (
-              <div className="text-center space-y-6 w-full max-w-xs">
-                <div className="text-7xl">🔗</div>
+              <div className="text-center space-y-4 w-full max-w-xs">
+                <div className="text-5xl">🔗</div>
                 <div className="text-white/50 text-sm font-semibold uppercase tracking-[0.2em]">
                   Claim Your Wrapped
                 </div>
