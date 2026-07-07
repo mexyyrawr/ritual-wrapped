@@ -27,11 +27,41 @@ export function WrappedCard({ data }: WrappedCardProps) {
   const [currentCard, setCurrentCard] = useState(0)
   const [capturing, setCapturing] = useState(false)
   const [claimed, setClaimed] = useState(false)
+  const [alreadyClaimed, setAlreadyClaimed] = useState(false)
   const { claim, isLoading: claiming, error: claimError, txHash } = useClaimWrapped()
   const { chain } = useAccount()
   const { switchChain, isPending: switching } = useSwitchChain()
   const isCorrectChain = chain?.id === ritualChain.id
   const touchStartX = useRef(0)
+
+  // Check if user already claimed on-chain
+  useEffect(() => {
+    const checkClaimed = async () => {
+      try {
+        const res = await fetch(`/api/wrapped?address=${data.address}`)
+        const json = await res.json()
+        // Check on-chain via RPC
+        const rpcRes = await fetch('/api/rpc', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            method: 'eth_call',
+            params: [{
+              to: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+              data: '0x73b2e80e' + data.address.slice(2).padStart(64, '0'),
+            }, 'latest'],
+            id: 1,
+          }),
+        })
+        const rpcJson = await rpcRes.json()
+        if (rpcJson.result && parseInt(rpcJson.result, 16) === 1) {
+          setAlreadyClaimed(true)
+        }
+      } catch {}
+    }
+    checkClaimed()
+  }, [data.address])
 
   // Build cards array
   const cards = [
@@ -352,10 +382,12 @@ export function WrappedCard({ data }: WrappedCardProps) {
                 </div>
 
                 {/* Claim button */}
-                {claimed || txHash ? (
+                {claimed || txHash || alreadyClaimed ? (
                   <div className="space-y-3">
                     <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/20 border border-green-500/30">
-                      <span className="text-green-400 text-sm font-semibold">✅ Claimed on-chain!</span>
+                      <span className="text-green-400 text-sm font-semibold">
+                        {alreadyClaimed ? '✅ Already claimed on-chain!' : '✅ Claimed on-chain!'}
+                      </span>
                     </div>
                     {txHash && (
                       <a
@@ -404,7 +436,7 @@ export function WrappedCard({ data }: WrappedCardProps) {
       </div>
 
       {/* Action buttons — only show after claim */}
-      {(claimed || txHash) && (
+      {(claimed || txHash || alreadyClaimed) && (
         <div className="flex justify-center gap-3 mt-4">
           <button
             onClick={handleDownload}
