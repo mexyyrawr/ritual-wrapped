@@ -207,7 +207,7 @@ export function WrappedCard({ data }: WrappedCardProps) {
   const theme = CARD_THEMES[current.themeIndex % CARD_THEMES.length]
 
   return (
-    <div className="w-full max-w-lg mx-auto">
+    <div className="w-full max-w-2xl mx-auto">
       {/* Progress dots */}
       <div className="flex justify-center gap-1.5 mb-4 px-4">
         {cards.map((_, i) => (
@@ -234,7 +234,7 @@ export function WrappedCard({ data }: WrappedCardProps) {
           else if (x < rect.width * 0.4) goPrev()
         }}
         className="relative overflow-hidden rounded-3xl cursor-pointer select-none"
-        style={{ isolation: 'isolate', aspectRatio: '16/10' }}
+        style={{ isolation: 'isolate', aspectRatio: '3/2' }}
       >
         {/* Gradient background */}
         <div className={`absolute inset-0 bg-gradient-to-b ${theme.bg}`} />
@@ -250,23 +250,23 @@ export function WrappedCard({ data }: WrappedCardProps) {
         />
 
         {/* Content */}
-        <div className="relative z-10 flex flex-col h-full p-4">
+        <div className="relative z-10 flex flex-col h-full p-6">
           {/* Top bar */}
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <img src="/ritual-logo.png" alt="Ritual" className="w-5 h-5" />
-              <span className="text-white/80 text-xs font-semibold uppercase tracking-wider">Ritual Wrapped</span>
+              <img src="/ritual-logo.png" alt="Ritual" className="w-6 h-6" />
+              <span className="text-white/80 text-sm font-semibold uppercase tracking-wider">Ritual Wrapped</span>
             </div>
-            <span className="text-white/40 text-xs font-mono">{new Date().getFullYear()}</span>
+            <span className="text-white/40 text-sm font-mono">{new Date().getFullYear()}</span>
           </div>
 
           {/* Card content */}
           <div className="flex-1 flex flex-col items-center justify-center">
             {current.type === 'title' && (
-              <div className="text-center space-y-3">
-                <div className="text-5xl">{current.icon}</div>
+              <div className="text-center space-y-4">
+                <div className="text-7xl">{current.icon}</div>
                 <h1
-                  className="font-display text-4xl leading-[0.95]"
+                  className="font-display text-6xl leading-[0.95]"
                   style={{
                     background: `linear-gradient(135deg, ${theme.accent} 0%, #ffffff 100%)`,
                     WebkitBackgroundClip: 'text',
@@ -275,8 +275,8 @@ export function WrappedCard({ data }: WrappedCardProps) {
                 >
                   {current.value}
                 </h1>
-                <p className="text-white/60 text-base font-light">{current.subtitle}</p>
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/10">
+                <p className="text-white/60 text-xl font-light">{current.subtitle}</p>
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/10">
                   <div className="w-2 h-2 rounded-full animate-pulse" style={{ backgroundColor: theme.accent }} />
                   <span className="text-white/60 text-xs font-medium uppercase tracking-wider">
                     Your {new Date().getFullYear()} Wrapped
@@ -286,13 +286,13 @@ export function WrappedCard({ data }: WrappedCardProps) {
             )}
 
             {current.type === 'stat' && (
-              <div className="text-center space-y-3">
-                <div className="text-6xl">{current.icon}</div>
-                <div className="text-white/50 text-sm font-semibold uppercase tracking-[0.2em]">
+              <div className="text-center space-y-4">
+                <div className="text-8xl">{current.icon}</div>
+                <div className="text-white/50 text-lg font-semibold uppercase tracking-[0.2em]">
                   {current.label}
                 </div>
                 <div
-                  className="font-display text-5xl md:text-6xl font-bold leading-none"
+                  className="font-display text-6xl md:text-7xl font-bold leading-none"
                   style={{ color: theme.accent }}
                 >
                   {current.value}
@@ -301,20 +301,20 @@ export function WrappedCard({ data }: WrappedCardProps) {
             )}
 
             {current.type === 'funfact' && (
-              <div className="text-center space-y-3 max-w-sm">
-                <div className="text-6xl">{current.icon}</div>
-                <div className="text-white/50 text-sm font-semibold uppercase tracking-[0.2em]">
+              <div className="text-center space-y-4 max-w-lg">
+                <div className="text-8xl">{current.icon}</div>
+                <div className="text-white/50 text-lg font-semibold uppercase tracking-[0.2em]">
                   Fun Fact
                 </div>
-                <p className="text-white text-xl font-light leading-relaxed">
+                <p className="text-white text-2xl font-light leading-relaxed">
                   {current.value}
                 </p>
               </div>
             )}
 
             {current.type === 'claim' && (
-              <div className="text-center space-y-4 w-full max-w-xs">
-                <div className="text-5xl">🔗</div>
+              <div className="text-center space-y-5 w-full max-w-sm">
+                <div className="text-7xl">🔗</div>
                 <div className="text-white/50 text-sm font-semibold uppercase tracking-[0.2em]">
                   Claim Your Wrapped
                 </div>
@@ -377,11 +377,11 @@ export function WrappedCard({ data }: WrappedCardProps) {
             )}
 
             {current.type === 'summary' && (
-              <div className="text-center w-full max-w-md mx-auto">
+              <div className="text-center w-full max-w-lg mx-auto">
                 {/* Title */}
-                <div className="mb-2">
+                <div className="mb-3">
                   <h2
-                    className="font-display text-2xl leading-tight"
+                    className="font-display text-3xl leading-tight"
                     style={{
                       background: `linear-gradient(135deg, ${theme.accent} 0%, #ffffff 100%)`,
                       WebkitBackgroundClip: 'text',
@@ -390,19 +390,19 @@ export function WrappedCard({ data }: WrappedCardProps) {
                   >
                     {data.title}
                   </h2>
-                  <p className="text-white/50 text-sm mt-0.5">{data.subtitle}</p>
+                  <p className="text-white/50 text-base mt-1">{data.subtitle}</p>
                 </div>
 
                 {/* Stats grid - 4 cols wide */}
-                <div className="grid grid-cols-4 gap-2 mb-2">
+                <div className="grid grid-cols-4 gap-3 mb-3">
                   {data.stats.map((stat, i) => (
                     <div
                       key={i}
-                      className="flex flex-col items-center py-2 px-1 rounded-xl bg-white/[0.08] border border-white/[0.1]"
+                      className="flex flex-col items-center py-3 px-2 rounded-xl bg-white/[0.08] border border-white/[0.1]"
                     >
-                      <span className="text-sm mb-0.5">{stat.icon}</span>
-                      <div className="text-white/40 text-[7px] uppercase tracking-wider leading-none">{stat.label}</div>
-                      <div className="font-mono text-[10px] font-bold text-white leading-tight mt-0.5">
+                      <span className="text-lg mb-1">{stat.icon}</span>
+                      <div className="text-white/40 text-[9px] uppercase tracking-wider leading-none">{stat.label}</div>
+                      <div className="font-mono text-xs font-bold text-white leading-tight mt-1">
                         {stat.value}
                       </div>
                     </div>
@@ -410,16 +410,16 @@ export function WrappedCard({ data }: WrappedCardProps) {
                 </div>
 
                 {/* Fun fact */}
-                <div className="bg-white/[0.06] rounded-xl px-3 py-1.5 border border-white/[0.08]">
-                  <p className="text-white/50 text-[9px] leading-snug">
+                <div className="bg-white/[0.06] rounded-xl px-4 py-2 border border-white/[0.08]">
+                  <p className="text-white/50 text-xs leading-snug">
                     💡 {data.funFact}
                   </p>
                 </div>
 
                 {/* Branding */}
-                <div className="flex items-center justify-center gap-2 mt-1.5">
-                  <img src="/ritual-logo.png" alt="Ritual" className="w-3 h-3" />
-                  <span className="text-white/20 text-[8px] font-mono uppercase tracking-wider">
+                <div className="flex items-center justify-center gap-2 mt-2">
+                  <img src="/ritual-logo.png" alt="Ritual" className="w-4 h-4" />
+                  <span className="text-white/20 text-[9px] font-mono uppercase tracking-wider">
                     ritual-wrapped.vercel.app
                   </span>
                 </div>
