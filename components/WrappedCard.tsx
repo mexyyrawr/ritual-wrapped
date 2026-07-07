@@ -207,7 +207,7 @@ export function WrappedCard({ data }: WrappedCardProps) {
   const theme = CARD_THEMES[current.themeIndex % CARD_THEMES.length]
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-lg mx-auto">
       {/* Progress dots */}
       <div className="flex justify-center gap-1.5 mb-4 px-4">
         {cards.map((_, i) => (
@@ -234,7 +234,7 @@ export function WrappedCard({ data }: WrappedCardProps) {
           else if (x < rect.width * 0.4) goPrev()
         }}
         className="relative overflow-hidden rounded-3xl cursor-pointer select-none"
-        style={{ isolation: 'isolate', aspectRatio: '4/3' }}
+        style={{ isolation: 'isolate', aspectRatio: '16/10' }}
       >
         {/* Gradient background */}
         <div className={`absolute inset-0 bg-gradient-to-b ${theme.bg}`} />
@@ -377,9 +377,9 @@ export function WrappedCard({ data }: WrappedCardProps) {
             )}
 
             {current.type === 'summary' && (
-              <div className="text-center space-y-3 w-full max-w-sm">
+              <div className="text-center w-full max-w-md mx-auto">
                 {/* Title */}
-                <div className="mb-1">
+                <div className="mb-2">
                   <h2
                     className="font-display text-2xl leading-tight"
                     style={{
@@ -393,12 +393,12 @@ export function WrappedCard({ data }: WrappedCardProps) {
                   <p className="text-white/50 text-sm mt-0.5">{data.subtitle}</p>
                 </div>
 
-                {/* Stats grid - 2x4 compact */}
-                <div className="grid grid-cols-4 gap-2">
+                {/* Stats grid - 4 cols wide */}
+                <div className="grid grid-cols-4 gap-2 mb-2">
                   {data.stats.map((stat, i) => (
                     <div
                       key={i}
-                      className="flex flex-col items-center py-2 px-1.5 rounded-xl bg-white/[0.08] border border-white/[0.1]"
+                      className="flex flex-col items-center py-2 px-1 rounded-xl bg-white/[0.08] border border-white/[0.1]"
                     >
                       <span className="text-sm mb-0.5">{stat.icon}</span>
                       <div className="text-white/40 text-[7px] uppercase tracking-wider leading-none">{stat.label}</div>
@@ -410,14 +410,14 @@ export function WrappedCard({ data }: WrappedCardProps) {
                 </div>
 
                 {/* Fun fact */}
-                <div className="bg-white/[0.06] rounded-xl px-3 py-2 border border-white/[0.08]">
+                <div className="bg-white/[0.06] rounded-xl px-3 py-1.5 border border-white/[0.08]">
                   <p className="text-white/50 text-[9px] leading-snug">
                     💡 {data.funFact}
                   </p>
                 </div>
 
                 {/* Branding */}
-                <div className="flex items-center justify-center gap-2">
+                <div className="flex items-center justify-center gap-2 mt-1.5">
                   <img src="/ritual-logo.png" alt="Ritual" className="w-3 h-3" />
                   <span className="text-white/20 text-[8px] font-mono uppercase tracking-wider">
                     ritual-wrapped.vercel.app
